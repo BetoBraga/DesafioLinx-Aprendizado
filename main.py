@@ -4,6 +4,7 @@ from datetime import date
 # Leitura dos dados
 offline_sales = pd.read_json("offline_sales.json.gz", lines=True,compression='gzip')
 online_orders = pd.read_json("online_orders.json.gz", lines=True,compression='gzip')
+online_pageviews = pd.read_json("online_pageviews.json.gz", lines=True,compression='gzip')
 
 # Soma da Coluna
 total_sales_offline = float(offline_sales['price'].sum())
@@ -15,6 +16,10 @@ total_online_orders_formatado = format(total_online_orders, ".2f")
 
 print(f'Faturamento de Vendas Offline: R${total_sales_offline_formatado}')
 print(f'Faturamento de Vendas Online: R${total_online_orders_formatado}')
+
+total_ = total_online_orders_formatado + total_sales_offline_formatado
+total_ = format(total_, ".2f")
+print(f'Faturamento Total de Vendas: R${total_}')
 
 # Produto mais vendido
 mais_vendido_on = online_orders.groupby(['on_product_id']).sum().sort_values("quantity", ascending=False)
@@ -47,4 +52,21 @@ else:
     
 print(f'Os cariocas {resposta_q3} fazer compras aos fins de semana. ')
 
-# REALIZAR 4 E 5 QUESTÕES
+# Declaração de costumers
+preferiu = nao_preferiu = 0
+lista_offline_customer_id = offline_sales['customer_id'].tolist()
+
+for i in online_pageviews['customer_id']:
+    if online_pageviews['customer_id'][i] in lista_offline_customer_id:
+        preferiu += 1
+    else:
+        nao_preferiu += 1
+
+if preferiu > nao_preferiu:
+    resposta_q4 = 'comprar na loja física'
+else:
+    resposta_q4 = 'não comprar na loja física'
+    
+print(f'É da preferência dos clientes {resposta_q4}')
+
+
