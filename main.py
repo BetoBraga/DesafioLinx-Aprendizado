@@ -69,4 +69,23 @@ else:
     
 print(f'É da preferência dos clientes {resposta_q4}')
 
+# Declaração de costumers que nao compraram mas acessaram a página
+comprou = nao_comprou = 0
+lista_online_customer_id_pageviews = online_pageviews['customer_id'].tolist()
+
+
+for i in online_orders['customer_id']:
+    if online_orders['customer_id'][i] in lista_online_customer_id_pageviews:
+        comprou += 1
+    else:
+        nao_comprou += 1
+
+numero_clientes = online_orders.groupby('customer_id')
+
+faturamento_promo = (nao_comprou * total_online_orders_formatado) / numero_clientes.ngroups 
+faturamento_com_desc = faturamento_promo - (faturamento_promo * 0.20)
+faturamento = format(faturamento_com_desc, ".2f")
+print(f'Os efeitos da promoção irão gerar um faturamento de R${faturamento_com_desc}')
+
+
 
